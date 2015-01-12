@@ -2,13 +2,13 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', f
     'use strict';
 
     var prepareTemplate = function(fields, templateVal) {
-        var template = '<table ng-table="tableParams" class="table">' +
+        var template = '<div class="table-responsive"><table ng-table="tableParams" class="table">' +
             '<tr ng-repeat-start="row in $data" ng-click="toggle(row)">';
         angular.forEach(fields, function(value) {
             template += '<td data-title="\'' + value.name + '\'" sortable="\'' + value.field + '\'">{{row.' + value.field + '}}</td>';
         });
         template += '</tr><tr ng-repeat-end="" ng-if="show(row)"><td colspan="' + fields.length + '">' + templateVal + '</td></tr>';
-        template += '</table>';
+        template += '</table></div>';
 
         return template;
     };
@@ -42,12 +42,11 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', f
                 page: 1,            // show first page
                 count: 10          // count per page
             }, {
-                total: $scope.ngModel.length,
                 getData: function($defer, params) {
                     var orderedData = params.sorting() ?
                         orderByFilter($scope.ngModel, params.orderBy()) :
                         $scope.ngModel;
-                    params.total = orderedData.length;
+                    params.total(orderedData.length);
                     if (angular.isFunction($scope.initTable)) {
                         $scope.initTable(orderedData, params);
                         $scope.initTable = null;

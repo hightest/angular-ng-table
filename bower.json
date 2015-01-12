@@ -22,6 +22,6 @@
   "dependencies": {
     "angular": "latest",
     "bootstrap": "latest",
-    "ng-table": "latest"
+    "ng-table": "0.3.*"
   }
 }
