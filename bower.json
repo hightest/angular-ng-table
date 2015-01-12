@@ -12,10 +12,11 @@
   "ignore": [
     "**/.*",
     "node_modules",
+    "src",
     "bower_components",
     "test*",
     "demo*",
-    "gruntFile.js",
+    "gulpfile.js",
     "package.json"
   ],
   "dependencies": {

@@ -12,6 +12,7 @@ var templateCache = require('gulp-angular-templatecache');
 var gutil = require('gulp-util');
 var plumber = require('gulp-plumber');//To prevent pipe breaking caused by errors at 'watch'
 var streamqueue = require('streamqueue');
+var ngAnnotate = require('gulp-ng-annotate');
 
 var config = {
     pkg : JSON.parse(fs.readFileSync('./package.json')),
@@ -71,6 +72,7 @@ gulp.task('scripts', ['clean'], function() {
             timestamp: (new Date()).toISOString(), pkg: config.pkg
         }))
         .pipe(gulp.dest('dist'))
+        .pipe(ngAnnotate())
         .pipe(uglify({preserveComments: 'some'}))
         .pipe(rename({ext:'.min.js'}))
         .pipe(gulp.dest('dist'));

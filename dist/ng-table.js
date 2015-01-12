@@ -1,12 +1,12 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-09T15:55:25.663Z
+ * Version: 0.0.1 - 2015-01-12T12:04:10.974Z
  * License: 
  */
 
 
-angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', function($compile) {
+angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', function($compile) {
     'use strict';
 
     var prepareTemplate = function(fields, templateVal) {
@@ -27,7 +27,7 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', function($comp
             htNgTable: '=',
             ngModel: '='
         },
-        controller: function ($scope, ngTableParams, orderByFilter) {
+        controller: ['$scope', 'ngTableParams', 'orderByFilter', function ($scope, ngTableParams, orderByFilter) {
             var settings = $scope.htNgTable;
             $scope.fields = settings.fields;
             $scope.template = settings.template;
@@ -55,7 +55,7 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', function($comp
                 }
             });
             /* jshint ignore:end */
-        },
+        }],
         link: function(scope, element) {
             var html = prepareTemplate(scope.fields, scope.template);
             element.html(html);
@@ -63,4 +63,4 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', function($comp
         }
     };
 
-});
+}]);

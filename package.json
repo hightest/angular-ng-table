@@ -22,7 +22,8 @@
     "gulp-uglify": "~0.3.1",
     "gulp-util": "^2.2.19",
     "streamqueue": "latest",
-    "jshint-stylish": "~0.3.0"
+    "jshint-stylish": "~0.3.0",
+    "gulp-ng-annotate": "latest"
   },
   "scripts": {
     "postinstall": "bower install"
