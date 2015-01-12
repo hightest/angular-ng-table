@@ -24,7 +24,11 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', f
             $scope.fields = settings.fields;
             $scope.template = settings.template;
             $scope.toggle = settings.expand;
-            $scope.show = settings.show;
+
+
+            $scope.show = function (row) {
+                return $scope.htNgTable.show(row);
+            };
 
             $scope.$watch('ngModel', function (newValue, oldValue) {
                 if (newValue == oldValue)
