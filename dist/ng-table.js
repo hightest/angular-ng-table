@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-12T14:56:55.004Z
+ * Version: 0.0.1 - 2015-01-12T14:59:04.316Z
  * License: 
  */
 
@@ -56,7 +56,10 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', f
                         orderByFilter($scope.ngModel, params.orderBy()) :
                         $scope.ngModel;
                     params.total = orderedData.length;
-                    $scope.initTable(orderedData, params);
+                    if (angular.isFunction($scope.initTable)) {
+                        $scope.initTable(orderedData, params);
+                        $scope.initTable = null;
+                    }
                     $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
             });

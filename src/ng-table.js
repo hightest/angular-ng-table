@@ -48,7 +48,10 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', f
                         orderByFilter($scope.ngModel, params.orderBy()) :
                         $scope.ngModel;
                     params.total = orderedData.length;
-                    $scope.initTable(orderedData, params);
+                    if (angular.isFunction($scope.initTable)) {
+                        $scope.initTable(orderedData, params);
+                        $scope.initTable = null;
+                    }
                     $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
             });
