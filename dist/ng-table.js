@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-12T12:04:10.974Z
+ * Version: 0.0.1 - 2015-01-12T14:56:55.004Z
  * License: 
  */
 
@@ -32,7 +32,12 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', f
             $scope.fields = settings.fields;
             $scope.template = settings.template;
             $scope.toggle = settings.expand;
-            $scope.show = settings.show;
+            $scope.initTable = settings.init;
+
+
+            $scope.show = function (row) {
+                return $scope.htNgTable.show(row);
+            };
 
             $scope.$watch('ngModel', function (newValue, oldValue) {
                 if (newValue == oldValue)
@@ -51,6 +56,7 @@ angular.module('ht.ng-table', ['ngTable']).directive('htNgTable', ['$compile', f
                         orderByFilter($scope.ngModel, params.orderBy()) :
                         $scope.ngModel;
                     params.total = orderedData.length;
+                    $scope.initTable(orderedData, params);
                     $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
                 }
             });
