@@ -22,6 +22,7 @@
   "dependencies": {
     "angular": "latest",
     "bootstrap": "latest",
-    "ng-table": "0.3.*"
+    "ng-table": "0.3.*",
+    "angular-ui-grid": "latest"
   }
 }

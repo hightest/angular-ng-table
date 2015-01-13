@@ -1,49 +1,24 @@
-angular.module('demo', ['ht.ng-table']).controller('DemoCtrl', function ($scope, ngTableParams, $filter) {
-    $scope.settings = {
-        fields: [
-            {name: "1", field: "name"},
-            {name: "2", field: "name"},
-            {name: "3", field: "name"},
-            {name: "4", field: "name"},
-            {name: "5", field: "name"},
-            {name: "6", field: "name"},
-            {name: "7", field: "name"},
-            {name: "8", field: "name"},
-            {name: "9", field: "name"},
-            {name: "10", field: "name"},
-            {name: "11", field: "name"},
-            {name: "12", field: "name"},
-            {name: "13", field: "name"},
-            {name: "14", field: "name"},
-            {name: "15", field: "age"}
-        ],
-        template: 'test',
-        show: function(row) {
-            if (row.age % 2)
-                return false;
-        },
-        expand: function (row) {
-            console.log('expand');
-        }
-    };
-
+angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $filter) {
     $scope.data = [
-        {name: "Moroni", age: 50},
-        {name: "Tiancum", age: 43},
-        {name: "Jacob", age: 27},
-        {name: "Nephi", age: 29},
-        {name: "Enos", age: 34},
-        {name: "Tiancum", age: 43},
-        {name: "Jacob", age: 27},
-        {name: "Nephi", age: 29},
-        {name: "Enos", age: 34},
-        {name: "Tiancum", age: 43},
-        {name: "Jacob", age: 27},
-        {name: "Nephi", age: 29},
-        {name: "Enos", age: 34},
-        {name: "Tiancum", age: 43},
-        {name: "Jacob", age: 27},
-        {name: "Nephi", age: 29},
-        {name: "Enos", age: 34}
+        {id: 1, name: "Moroni", age: 50},
+        {id: 2, name: "Tiancum", age: 43},
+        {id: 3, name: "Jacob", age: 27},
+        {id: 4, name: "Nephi", age: 29},
+        {id: 5, name: "Enos", age: 34},
+        {id: 6, name: "Tiancum", age: 43},
+        {id: 7, name: "Jacob", age: 27},
+        {id: 8, name: "Nephi", age: 29},
+        {id: 9, name: "Enos", age: 34},
+        {id: 10, name: "Tiancum", age: 43},
+        {id: 11, name: "Jacob", age: 27},
+        {id: 12, name: "Nephi", age: 29},
+        {id: 13, name: "Enos", age: 34},
+        {id: 14, name: "Tiancum", age: 43},
+        {id: 15, name: "Jacob", age: 27},
+        {id: 16, name: "Nephi", age: 29},
+        {id: 17, name: "Enos", age: 34}
     ];
+
+    $scope.settings = {data: $scope.data, fields: [{name: "imie", value: "name"},{name: "wiek", value: "age"}]};
+
 });

@@ -45,7 +45,7 @@ gulp.task('scripts', ['clean'], function() {
                 spare: true,
                 quotes: true
             }))
-            .pipe(templateCache({module: 'ht.ng-table'}));
+            .pipe(templateCache({module: 'ht.table'}));
     };
 
     var buildLib = function(){
@@ -67,7 +67,7 @@ gulp.task('scripts', ['clean'], function() {
         .pipe(plumber({
             errorHandler: handleError
         }))
-        .pipe(concat('ng-table.js'))
+        .pipe(concat('ht-table.js'))
         .pipe(header(config.banner, {
             timestamp: (new Date()).toISOString(), pkg: config.pkg
         }))

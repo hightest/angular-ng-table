@@ -1,0 +1,36 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th ng-repeat="field in table.fields">
+                {{field.name}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat-start="row in table.data" ng-click="table.expand(row)" ng-class="{active: table.show(row)}">
+            <td ng-repeat="field in table.fields">
+                {{row[field.value]}}
+            </td>
+        </tr>
+        <tr ng-repeat-end="" ng-if="table.show(row)">
+            <td colspan="2">dsads</td>
+        </tr>
+    </tbody>
+</table>
+<nav>
+    <ul class="pagination">
+        <li ng-class="{disabled: table.isFirstPage()}">
+            <a href="" ng-click="table.previousPage()" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li ng-class="{active: table.isActivePage(page)}" ng-repeat="page in table.getPages()" >
+            <a href="" ng-click="table.setPage(page)">{{ page }}</a>
+        </li>
+        <li ng-class="{disabled: table.isLastPage()}">
+            <a href="" ng-click="table.nextPage()" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
