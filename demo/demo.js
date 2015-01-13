@@ -172,6 +172,11 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
         {id: 17, name: "Enos", age: 34}
     ];
 
-    $scope.settings = {data: $scope.data, fields: [{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "wiek", value: "age"}]};
+    $scope.settings = {
+        data: $scope.data, fields: [{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "wiek", value: "age"}],
+        init: function(data, pagination) {
+            pagination.current = 3;
+        }
+    };
 
 });

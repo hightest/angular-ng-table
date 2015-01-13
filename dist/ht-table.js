@@ -53,11 +53,12 @@ app.directive('htTable', function() {
                     predicates.push(predicate);
                 });
                 var orderedData = sorting.length ? orderByFilter(originalData, predicates) : originalData;
+
+                this.pagination.total = orderedData.length;
                 if (angular.isFunction(init)) {
                     init(orderedData, this.pagination);
                     init = null;
                 }
-                this.pagination.total = orderedData.length;
                 if (!this.pagination.itemsPerPage)
                     this.data = orderedData;
                 else
