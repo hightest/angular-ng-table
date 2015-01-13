@@ -26,7 +26,7 @@ var config = {
 };
 
 gulp.task('default', ['build']);
-gulp.task('build', ['scripts']);
+gulp.task('build', ['scripts', 'styles']);
 
 gulp.task('watch', ['build'], function() {
     gulp.watch(['src/*.{js,html}'], ['build']);
@@ -34,6 +34,19 @@ gulp.task('watch', ['build'], function() {
 
 gulp.task('clean', function(cb) {
     del(['dist'], cb);
+});
+
+gulp.task('styles', ['clean'], function() {
+
+    return gulp.src('src/*.css')
+        .pipe(header(config.banner, {
+            timestamp: (new Date()).toISOString(), pkg: config.pkg
+        }))
+        .pipe(gulp.dest('dist'))
+        .pipe(minifyCSS())
+        .pipe(rename({ext:'.min.css'}))
+        .pipe(gulp.dest('dist'));
+
 });
 
 gulp.task('scripts', ['clean'], function() {

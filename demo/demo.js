@@ -8,7 +8,7 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
         {id: 6, name: "Tiancum", age: 43},
         {id: 7, name: "Jacob", age: 27},
         {id: 8, name: "Nephi", age: 29},
-        {id: 9, name: "Enos", age: 34},
+        {id: 9, name: "Enos", age: 33},
         {id: 10, name: "Tiancum", age: 43},
         {id: 11, name: "Jacob", age: 27},
         {id: 12, name: "Nephi", age: 29},
@@ -19,6 +19,6 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
         {id: 17, name: "Enos", age: 34}
     ];
 
-    $scope.settings = {data: $scope.data, fields: [{name: "imie", value: "name"},{name: "wiek", value: "age"}]};
+    $scope.settings = {data: $scope.data, fields: [{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "imie", value: "name"},{name: "wiek", value: "age"}]};
 
 });

@@ -1,5 +1,5 @@
 {
-  "name": "angular-ht-ng-table",
+  "name": "angular-ht-table",
   "version": "0.0.1",
   "description": "",
   "author": "Adrian Nowicki <adrian.nowicki@outlook.com",
@@ -23,6 +23,7 @@
     "angular": "latest",
     "bootstrap": "latest",
     "ng-table": "0.3.*",
+    "angular-bootstrap": "latest",
     "angular-ui-grid": "latest"
   }
 }
