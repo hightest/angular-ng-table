@@ -12,14 +12,16 @@ app.directive('htTable', function() {
             var expand = angular.isDefined(settings.expand) ? settings.expand : function() {};
             var self = this;
             var originalData = settings.data;
+            var init = angular.isDefined(settings.init) ? settings.init : function() {};
             this.fields = settings.fields;
             this.checked = [];
+            this.pagination = {
+                total: 0,
+                current: 1,
+                itemsPerPage: 10
+            };
             var sorting = [];
             this.data = originalData;
-
-            this.itemsPerPage = 10;
-            this.totalItems = 0;
-            this.currentPage = 1;
 
             $scope.$watch('htTable', function(newVal, oldVal) {
                 if (newVal == oldVal)
@@ -43,16 +45,20 @@ app.directive('htTable', function() {
                     predicates.push(predicate);
                 });
                 var orderedData = sorting.length ? orderByFilter(originalData, predicates) : originalData;
-                this.totalItems = orderedData.length;
-                if (!this.itemsPerPage)
+                if (angular.isFunction(init)) {
+                    init(orderedData, this.pagination);
+                    init = null;
+                }
+                this.pagination.total = orderedData.length;
+                if (!this.pagination.itemsPerPage)
                     this.data = orderedData;
                 else
-                    this.data = orderedData.slice((this.currentPage - 1) * this.itemsPerPage, this.currentPage * this.itemsPerPage);
+                    this.data = orderedData.slice((this.pagination.current - 1) * this.pagination.itemsPerPage, this.pagination.current * this.pagination.itemsPerPage);
             };
             this.reloadTable();
 
             $scope.$watch(function() {
-                return self.itemsPerPage;
+                return self.pagination.itemsPerPage;
             }, function(newVal, oldVal) {
                 if (newVal == oldVal)
                     return;
@@ -110,9 +116,6 @@ app.directive('htTable', function() {
 
                 return count;
             };
-
-            this.isopen = true;
-            this.toggle = function($event) {this.isopen = !this.isopen;};
         },
         controllerAs: 'table'
     };
