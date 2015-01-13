@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-13T15:18:47.500Z
+ * Version: 0.0.1 - 2015-01-13T15:22:23.789Z
  * License: 
  */
 
@@ -29,6 +29,11 @@ app.directive('htTable', function() {
             this.totalItems = 0;
             this.currentPage = 1;
 
+            $scope.$watch('htTable', function(newVal, oldVal) {
+                if (newVal == oldVal)
+                    return;
+                self.reloadTable();
+            }, true);
             angular.forEach(this.fields, function(field) {
                 if (angular.isUndefined(field.visible)) {
                     field.visible = true;

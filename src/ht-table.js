@@ -21,6 +21,11 @@ app.directive('htTable', function() {
             this.totalItems = 0;
             this.currentPage = 1;
 
+            $scope.$watch('htTable', function(newVal, oldVal) {
+                if (newVal == oldVal)
+                    return;
+                self.reloadTable();
+            }, true);
             angular.forEach(this.fields, function(field) {
                 if (angular.isUndefined(field.visible)) {
                     field.visible = true;
