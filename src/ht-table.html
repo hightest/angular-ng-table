@@ -22,7 +22,7 @@
                 {{row[field.value]}}
             </td>
         <tr ng-repeat-end="" ng-if="table.show(row)">
-            <td colspan="{{table.countColumns()}}">dsads</td>
+            <td colspan="{{table.countColumns()}}"><div ui-view></div></td>
         </tr>
     </tbody>
 </table>
