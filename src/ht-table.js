@@ -26,6 +26,7 @@ app.directive('htTable', function() {
             $scope.$watch('htTable', function(newVal, oldVal) {
                 if (newVal == oldVal)
                     return;
+                originalData = newVal.data;
                 self.reloadTable();
             }, true);
             angular.forEach(this.fields, function(field) {

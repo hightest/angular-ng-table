@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-13T15:51:15.532Z
+ * Version: 0.0.1 - 2015-01-14T14:55:45.431Z
  * License: 
  */
 
@@ -34,6 +34,7 @@ app.directive('htTable', function() {
             $scope.$watch('htTable', function(newVal, oldVal) {
                 if (newVal == oldVal)
                     return;
+                originalData = newVal.data;
                 self.reloadTable();
             }, true);
             angular.forEach(this.fields, function(field) {
@@ -53,12 +54,11 @@ app.directive('htTable', function() {
                     predicates.push(predicate);
                 });
                 var orderedData = sorting.length ? orderByFilter(originalData, predicates) : originalData;
-
-                this.pagination.total = orderedData.length;
                 if (angular.isFunction(init)) {
                     init(orderedData, this.pagination);
                     init = null;
                 }
+                this.pagination.total = orderedData.length;
                 if (!this.pagination.itemsPerPage)
                     this.data = orderedData;
                 else
