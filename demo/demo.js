@@ -20,16 +20,25 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
     ];
 
     $scope.settings = {
-        data: $scope.data, fields: [{name: "imie", value: "name"},{name: "wiek", value: "age"}],
+        data: $scope.data,
+        fields: [
+            {
+                name: "imie",
+                value: "name",
+                sort: "asc"
+            },
+            {
+                name: "wiek",
+                value: "age",
+                type: "sum"
+            }
+        ],
         init: function(data, pagination) {
             pagination.current = 3;
         },
         checked: function(rows) {
             console.log(rows);
-        },
-        sort: [
-            {field: "name", sort: "asc"}
-        ]
+        }
     };
 
 });

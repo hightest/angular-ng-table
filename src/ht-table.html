@@ -24,7 +24,18 @@
         <tr ng-repeat-end="" ng-if="table.show(row)">
             <td colspan="{{table.countColumns()}}"><div ui-view></div></td>
         </tr>
+
     </tbody>
+    <tfoot ng-if="table.hasSum()">
+        <tr>
+            <td>&nbsp;</td>
+            <td ng-repeat="field in table.fields" ng-if="field.visible">
+                <span ng-if="field.type">
+                    Suma: {{table.sum(field.value)}}
+                </span>
+            </td>
+        </tr>
+    </tfoot>
 </table>
 </div>
 

@@ -14,28 +14,33 @@ app.directive('htTable', function() {
             var checkedRows = angular.isDefined(settings.checked) ? settings.checked : function() {};
             var originalData = settings.data;
             var init = angular.isDefined(settings.init) ? settings.init : function() {};
-            this.fields = settings.fields;
+            self.fields = settings.fields;
             self.checked = [];
-            this.pagination = {
+            self.pagination = {
                 total: 0,
                 current: 1,
                 itemsPerPage: 10
             };
-            var sorting = angular.isDefined(settings.sort) ? settings.sort : [];
-            this.data = originalData;
+            var sorting = [];
+            self.data = originalData;
 
+            angular.forEach(self.fields, function(field) {
+                if (angular.isDefined(field.sort)) {
+                    sorting.push({field: field.value, sort: field.sort});
+                }
+            });
             $scope.$watch('htTable', function(newVal, oldVal) {
                 if (newVal == oldVal)
                     return;
                 originalData = newVal.data;
                 self.reloadTable();
             }, true);
-            angular.forEach(this.fields, function(field) {
+            angular.forEach(self.fields, function(field) {
                 if (angular.isUndefined(field.visible)) {
                     field.visible = true;
                 }
             });
-            this.reloadTable = function() {
+            self.reloadTable = function() {
                 var predicates = [];
                 angular.forEach(sorting, function (sort) {
                     var predicate = '';
@@ -48,16 +53,16 @@ app.directive('htTable', function() {
                 });
                 var orderedData = sorting.length ? orderByFilter(originalData, predicates) : originalData;
                 if (angular.isFunction(init)) {
-                    init(orderedData, this.pagination);
+                    init(orderedData, self.pagination);
                     init = null;
                 }
-                this.pagination.total = orderedData.length;
-                if (!this.pagination.itemsPerPage)
-                    this.data = orderedData;
+                self.pagination.total = orderedData.length;
+                if (!self.pagination.itemsPerPage)
+                    self.data = orderedData;
                 else
-                    this.data = orderedData.slice((this.pagination.current - 1) * this.pagination.itemsPerPage, this.pagination.current * this.pagination.itemsPerPage);
+                    self.data = orderedData.slice((self.pagination.current - 1) * self.pagination.itemsPerPage, self.pagination.current * self.pagination.itemsPerPage);
             };
-            this.reloadTable();
+            self.reloadTable();
 
             $scope.$watch(function() {
                 return self.pagination.itemsPerPage;
@@ -66,19 +71,19 @@ app.directive('htTable', function() {
                     return;
                 self.reloadTable();
             });
-            this.expand = function(row) {
+            self.expand = function(row) {
                 return rowClick(row);
             };
 
-            this.show = function (row) {
+            self.show = function (row) {
                 return expand(row);
             };
 
-            this.pageChanged = function() {
+            self.pageChanged = function() {
                 this.reloadTable();
             };
 
-            this.getFieldClass = function(field) {
+            self.getFieldClass = function(field) {
                 for (var i = 0; i < sorting.length; i++) {
                     if (field.value == sorting[i].field) {
                         if (sorting[i].sort == 'asc')
@@ -100,7 +105,7 @@ app.directive('htTable', function() {
                 return null;
             };
 
-            this.changeSorting = function(field, $event) {
+            self.changeSorting = function(field, $event) {
                 var shift = $event.shiftKey;
 
                 var fieldPosition = findField(field);
@@ -130,12 +135,12 @@ app.directive('htTable', function() {
                     else
                         sorting = [newField];
                 }
-                this.reloadTable();
+                self.reloadTable();
             };
 
-            this.countColumns = function() {
+            self.countColumns = function() {
                 var count = 1;
-                angular.forEach(this.fields, function(field) {
+                angular.forEach(self.fields, function(field) {
                     if (field.visible)
                         count++;
                 });
@@ -147,16 +152,44 @@ app.directive('htTable', function() {
                 if (newVal == oldVal)
                     return;
 
-                var checkedElements = [];
-
-                for (var i = 0; i < originalData.length; i++) {
-                    var id = originalData[i].id;
-                    if (angular.isDefined(newVal[id]) && newVal[id])
-                        checkedElements.push(originalData[i]);
-                }
+                var checkedElements = self.getCheckedElements();
 
                 checkedRows(checkedElements);
             }, true);
+
+
+            self.hasSum = function() {
+                for (var i = 0; i < self.fields.length; i++) {
+                    if (angular.isDefined(self.fields[i].type) && self.fields[i].type == 'sum')
+                        return true;
+                }
+
+                return false;
+            };
+            self.getCheckedElements = function() {
+                var checkedElements = [];
+                for (var i = 0; i < originalData.length; i++) {
+                    var id = originalData[i].id;
+                    if (angular.isDefined(self.checked[id]) && self.checked[id])
+                        checkedElements.push(originalData[i]);
+                }
+
+                return checkedElements;
+            };
+
+            self.sum = function(field) {
+                var sum = 0;
+                var checkedElements = self.getCheckedElements();
+
+                if (!checkedElements.length)
+                    checkedElements = originalData;
+
+                angular.forEach(checkedElements, function(element) {
+                    sum += element[field];
+                });
+
+                return sum;
+            };
         },
         controllerAs: 'table'
     };
