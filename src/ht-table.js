@@ -7,14 +7,15 @@ app.directive('htTable', function() {
             'htTable': '='
         },
         controller: function($scope, orderByFilter) {
+            var self = this;
             var settings = $scope.htTable;
             var rowClick = angular.isDefined(settings.rowClick) ? settings.rowClick : function() {};
             var expand = angular.isDefined(settings.expand) ? settings.expand : function() {};
-            var self = this;
+            var checkedRows = angular.isDefined(settings.checked) ? settings.checked : function() {};
             var originalData = settings.data;
             var init = angular.isDefined(settings.init) ? settings.init : function() {};
             this.fields = settings.fields;
-            this.checked = [];
+            self.checked = [];
             this.pagination = {
                 total: 0,
                 current: 1,
@@ -89,21 +90,45 @@ app.directive('htTable', function() {
                 return '';
             };
 
-            this.changeSorting = function(field) {
-                var changed = false;
+            var findField = function (field) {
                 for (var i = 0; i < sorting.length; i++) {
                     if (sorting[i].field == field.value) {
-                        var sort = sorting[i].sort;
-                        if (sort == 'asc')
-                            sorting[i].sort = 'desc';
-                        else
-                            sorting.splice(i, 1);
-                        changed = true;
-                        break;
+                        return i;
                     }
                 }
-                if (!changed) {
-                    sorting.push({field: field.value, sort: 'asc'});
+
+                return null;
+            };
+
+            this.changeSorting = function(field, $event) {
+                var shift = $event.shiftKey;
+
+                var fieldPosition = findField(field);
+
+                var newField = {};
+                if (null === fieldPosition)
+                    newField = {field: field.value, sort: 'asc'};
+                else
+                    newField = sorting[fieldPosition];
+
+                if (null !== fieldPosition) {
+                    var sort = newField.sort;
+                    if (sort == 'asc') {
+                        sorting[fieldPosition].sort = 'desc';
+                        if (!shift) {
+                            sorting = [sorting[fieldPosition]];
+                        }
+                    } else {
+                        if (shift)
+                            sorting.splice(fieldPosition, 1);
+                        else
+                            sorting = [];
+                    }
+                } else {
+                    if (shift)
+                        sorting.push(newField);
+                    else
+                        sorting = [newField];
                 }
                 this.reloadTable();
             };
@@ -117,6 +142,21 @@ app.directive('htTable', function() {
 
                 return count;
             };
+
+            $scope.$watch(function() {return self.checked;}, function(newVal, oldVal) {
+                if (newVal == oldVal)
+                    return;
+
+                var checkedElements = [];
+
+                for (var i = 0; i < originalData.length; i++) {
+                    var id = originalData[i].id;
+                    if (angular.isDefined(newVal[id]) && newVal[id])
+                        checkedElements.push(originalData[i]);
+                }
+
+                checkedRows(checkedElements);
+            }, true);
         },
         controllerAs: 'table'
     };

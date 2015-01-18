@@ -10,7 +10,7 @@
                     </ul>
                 </div>
             </th>
-            <th ng-repeat="field in table.fields" ng-if="field.visible" ng-click=table.changeSorting(field)" ng-class="table.getFieldClass(field)">
+            <th ng-repeat="field in table.fields" ng-if="field.visible" ng-click="table.changeSorting(field, $event)" ng-class="table.getFieldClass(field)">
                 {{field.name}}
             </th>
         </tr>
