@@ -26,7 +26,10 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
         },
         checked: function(rows) {
             console.log(rows);
-        }
+        },
+        sort: [
+            {field: "name", sort: "asc"}
+        ]
     };
 
 });

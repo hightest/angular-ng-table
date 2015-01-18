@@ -21,7 +21,7 @@ app.directive('htTable', function() {
                 current: 1,
                 itemsPerPage: 10
             };
-            var sorting = [];
+            var sorting = angular.isDefined(settings.sort) ? settings.sort : [];
             this.data = originalData;
 
             $scope.$watch('htTable', function(newVal, oldVal) {

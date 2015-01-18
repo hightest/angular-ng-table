@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-18T11:03:24.443Z
+ * Version: 0.0.1 - 2015-01-18T11:07:35.237Z
  * License: 
  */
 
@@ -29,7 +29,7 @@ app.directive('htTable', function() {
                 current: 1,
                 itemsPerPage: 10
             };
-            var sorting = [];
+            var sorting = angular.isDefined(settings.sort) ? settings.sort : [];
             this.data = originalData;
 
             $scope.$watch('htTable', function(newVal, oldVal) {
