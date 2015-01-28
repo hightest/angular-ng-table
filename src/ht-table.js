@@ -15,7 +15,6 @@ app.directive('htTable', function() {
             var originalData = settings.data;
             var init = angular.isDefined(settings.init) ? settings.init : function() {};
             self.fields = settings.fields;
-            self.checked = [];
             self.pagination = {
                 total: 0,
                 current: 1,
@@ -148,15 +147,11 @@ app.directive('htTable', function() {
                 return count;
             };
 
-            $scope.$watch(function() {return self.checked;}, function(newVal, oldVal) {
-                if (newVal == oldVal)
-                    return;
-
+            self.checkedChange = function() {
                 var checkedElements = self.getCheckedElements();
 
                 checkedRows(checkedElements);
-            }, true);
-
+            };
 
             self.hasSum = function() {
                 for (var i = 0; i < self.fields.length; i++) {
@@ -168,11 +163,12 @@ app.directive('htTable', function() {
             };
             self.getCheckedElements = function() {
                 var checkedElements = [];
-                for (var i = 0; i < originalData.length; i++) {
-                    var id = originalData[i].id;
-                    if (angular.isDefined(self.checked[id]) && self.checked[id])
-                        checkedElements.push(originalData[i]);
-                }
+
+                angular.forEach(self.data, function(row) {
+                    if (angular.isDefined(row.checked) && row.checked) {
+                        this.push(row);
+                    }
+                }, checkedElements);
 
                 return checkedElements;
             };

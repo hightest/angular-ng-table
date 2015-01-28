@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-18T11:27:49.419Z
+ * Version: 0.0.1 - 2015-01-28T23:13:28.363Z
  * License: 
  */
 
@@ -23,7 +23,6 @@ app.directive('htTable', function() {
             var originalData = settings.data;
             var init = angular.isDefined(settings.init) ? settings.init : function() {};
             self.fields = settings.fields;
-            self.checked = [];
             self.pagination = {
                 total: 0,
                 current: 1,
@@ -156,15 +155,11 @@ app.directive('htTable', function() {
                 return count;
             };
 
-            $scope.$watch(function() {return self.checked;}, function(newVal, oldVal) {
-                if (newVal == oldVal)
-                    return;
-
+            self.checkedChange = function() {
                 var checkedElements = self.getCheckedElements();
 
                 checkedRows(checkedElements);
-            }, true);
-
+            };
 
             self.hasSum = function() {
                 for (var i = 0; i < self.fields.length; i++) {
@@ -176,11 +171,12 @@ app.directive('htTable', function() {
             };
             self.getCheckedElements = function() {
                 var checkedElements = [];
-                for (var i = 0; i < originalData.length; i++) {
-                    var id = originalData[i].id;
-                    if (angular.isDefined(self.checked[id]) && self.checked[id])
-                        checkedElements.push(originalData[i]);
-                }
+
+                angular.forEach(self.data, function(row) {
+                    if (angular.isDefined(row.checked) && row.checked) {
+                        this.push(row);
+                    }
+                }, checkedElements);
 
                 return checkedElements;
             };
@@ -202,4 +198,4 @@ app.directive('htTable', function() {
         controllerAs: 'table'
     };
 });
-angular.module("ht.table").run(["$templateCache", function($templateCache) {$templateCache.put("ht-table.html","<div class=\"table-responsive\"><table class=\"table table-bordered\" id=\"table\"><thead><tr><th><div dropdown=\"\" class=\"btn-group\"><button class=\"btn btn-default dropdown-toggle\" type=\"button\" dropdown-toggle=\"\"><span class=\"glyphicon glyphicon-cog\" aria-hidden=\"true\"></span></button><ul class=\"dropdown-menu\" role=\"menu\" ng-click=\"$event.stopPropagation()\"><li ng-repeat=\"field in table.fields\"><label><input type=\"checkbox\" ng-model=\"field.visible\">{{field.name}}</label></li></ul></div></th><th ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.changeSorting(field, $event)\" ng-class=\"table.getFieldClass(field)\">{{field.name}}</th></tr></thead><tbody><tr ng-repeat-start=\"row in table.data\" ng-class=\"{active: table.show(row)}\"><th scope=\"row\"><input type=\"checkbox\" ng-model=\"table.checked[row.id]\"></th><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.expand(row)\">{{row[field.value]}}</td></tr><tr ng-repeat-end=\"\" ng-if=\"table.show(row)\"><td colspan=\"{{table.countColumns()}}\"><div ui-view=\"\"></div></td></tr></tbody><tfoot ng-if=\"table.hasSum()\"><tr><td>&nbsp;</td><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\"><span ng-if=\"field.type\">Suma: {{table.sum(field.value)}}</span></td></tr></tfoot></table></div><div class=\"row\"><div class=\"col-xs-6\"><pagination total-items=\"table.pagination.total\" ng-model=\"table.pagination.current\" ng-change=\"table.pageChanged()\" items-per-page=\"table.pagination.itemsPerPage\" previous-text=\"&laquo;\" next-text=\"&raquo;\"></pagination></div><div class=\"btn-group col-xs-6\"><label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"10\">10</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"25\">25</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"50\">50</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"100\">100</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"0\">Wszystkie</label></div></div>");}]);
+angular.module("ht.table").run(["$templateCache", function($templateCache) {$templateCache.put("ht-table.html","<div class=\"table-responsive\"><table class=\"table table-bordered\" id=\"table\"><thead><tr><th><div dropdown=\"\" class=\"btn-group\"><button class=\"btn btn-default dropdown-toggle\" type=\"button\" dropdown-toggle=\"\"><span class=\"glyphicon glyphicon-cog\" aria-hidden=\"true\"></span></button><ul class=\"dropdown-menu\" role=\"menu\" ng-click=\"$event.stopPropagation()\"><li ng-repeat=\"field in table.fields\"><label><input type=\"checkbox\" ng-model=\"field.visible\">{{field.name}}</label></li></ul></div></th><th ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.changeSorting(field, $event)\" ng-class=\"table.getFieldClass(field)\">{{field.name}}</th></tr></thead><tbody><tr ng-repeat-start=\"row in table.data\" ng-class=\"{active: table.show(row)}\"><th scope=\"row\"><input type=\"checkbox\" ng-model=\"row.checked\" ng-change=\"table.checkedChange()\"></th><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.expand(row)\">{{row[field.value]}}</td></tr><tr ng-repeat-end=\"\" ng-if=\"table.show(row)\"><td colspan=\"{{table.countColumns()}}\"><div ui-view=\"\"></div></td></tr></tbody><tfoot ng-if=\"table.hasSum()\"><tr><td>&nbsp;</td><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\"><span ng-if=\"field.type\">Suma: {{table.sum(field.value)}}</span></td></tr></tfoot></table></div><div class=\"row\"><div class=\"col-xs-6\"><pagination total-items=\"table.pagination.total\" ng-model=\"table.pagination.current\" ng-change=\"table.pageChanged()\" items-per-page=\"table.pagination.itemsPerPage\" previous-text=\"&laquo;\" next-text=\"&raquo;\"></pagination></div><div class=\"btn-group col-xs-6\"><label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"10\">10</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"25\">25</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"50\">50</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"100\">100</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"0\">Wszystkie</label></div></div>");}]);

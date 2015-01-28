@@ -1,7 +1,7 @@
 angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $filter) {
     $scope.data = [
         {id: 1, name: "Moroni", age: 50},
-        {id: 2, name: "Tiancum", age: 43},
+        {id: 1, name: "Tiancum", age: 43},
         {id: 3, name: "Jacob", age: 27},
         {id: 4, name: "Nephi", age: 29},
         {id: 5, name: "Enos", age: 34},
