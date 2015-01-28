@@ -44,7 +44,7 @@
 
 <div class="row">
     <div class="col-xs-6">
-        <pagination total-items="table.pagination.total" ng-model="table.pagination.current" ng-change="table.pageChanged()" items-per-page="table.pagination.itemsPerPage" previous-text="&laquo;" next-text="&raquo;"></pagination>
+        <pagination total-items="table.pagination.total" ng-model="table.pagination.current" ng-change="table.pageChanged()" max-size="5" items-per-page="table.pagination.itemsPerPage" previous-text="&laquo;" next-text="&raquo;"></pagination>
     </div>
     <div class="btn-group col-xs-6">
         <label class="btn btn-primary" ng-model="table.pagination.itemsPerPage" btn-radio="10">10</label>
