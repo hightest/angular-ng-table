@@ -110,6 +110,7 @@ app.directive('htTable', function() {
                 var fieldPosition = findField(field);
 
                 var newField = {};
+
                 if (null === fieldPosition)
                     newField = {field: field.value, sort: 'asc'};
                 else
