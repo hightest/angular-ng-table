@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-28T23:30:02.955Z
+ * Version: 0.0.1 - 2015-01-29T08:29:55.164Z
  * License: 
  */
 
