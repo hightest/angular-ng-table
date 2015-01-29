@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-01-29T08:29:55.164Z
+ * Version: 0.0.1 - 2015-01-29T08:34:58.372Z
  * License: 
  */
 
@@ -147,7 +147,7 @@ app.directive('htTable', function() {
             };
 
             self.countColumns = function() {
-                var count = 1;
+                var count = 2;
                 angular.forEach(self.fields, function(field) {
                     if (field.visible)
                         count++;
