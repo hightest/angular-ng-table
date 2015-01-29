@@ -19,7 +19,7 @@
     <tbody>
         <tr ng-repeat-start="row in table.data" ng-class="{active: table.show(row)}">
             <td>{{(table.pagination.current - 1) * table.pagination.itemsPerPage + $index + 1}}.</td>
-            <th scope="row"><input type="checkbox" ng-model="table.checked[row.id]"></th>
+            <th scope="row"><input type="checkbox" ng-model="row.checked"></th>
             <td ng-repeat="field in table.fields" ng-if="field.visible" ng-click="table.expand(row)">
                 {{row[field.value]}}
             </td>
