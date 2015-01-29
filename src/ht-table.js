@@ -139,7 +139,7 @@ app.directive('htTable', function() {
             };
 
             self.countColumns = function() {
-                var count = 1;
+                var count = 2;
                 angular.forEach(self.fields, function(field) {
                     if (field.visible)
                         count++;
