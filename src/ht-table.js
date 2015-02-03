@@ -12,6 +12,8 @@ app.directive('htTable', function() {
             var rowClick = angular.isDefined(settings.rowClick) ? settings.rowClick : function() {};
             var expand = angular.isDefined(settings.expand) ? settings.expand : function() {};
             var checkedRows = angular.isDefined(settings.checked) ? settings.checked : function() {};
+            self.id = angular.isDefined(settings.id) ? settings.id : 'table';
+            self.class = angular.isDefined(settings.class) ? settings.class : [];
             var originalData = settings.data;
             var init = angular.isDefined(settings.init) ? settings.init : function() {};
             self.fields = settings.fields;

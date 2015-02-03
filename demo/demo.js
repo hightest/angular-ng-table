@@ -21,6 +21,8 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
 
     $scope.settings = {
         data: $scope.data,
+        id: 'table-id',
+        class: ['myClass'],
         fields: [
             {
                 name: "imie",
