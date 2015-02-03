@@ -14,8 +14,11 @@ app.directive('htTable', function() {
             var checkedRows = angular.isDefined(settings.checked) ? settings.checked : function() {};
             self.id = angular.isDefined(settings.id) ? settings.id : 'table';
             self.class = angular.isDefined(settings.class) ? settings.class : [];
+            self.selectMultiple = angular.isDefined(settings.selectMultiple) ? settings.selectMultiple : false;
+            var active = angular.isDefined(settings.active) ? settings.active : '';
             var originalData = settings.data;
             var init = angular.isDefined(settings.init) ? settings.init : function() {};
+            var singleSelect = null;
             self.fields = settings.fields;
             self.pagination = {
                 total: 0,
@@ -73,6 +76,7 @@ app.directive('htTable', function() {
                 self.reloadTable();
             });
             self.expand = function(row) {
+                singleSelect = row;
                 return rowClick(row);
             };
 
@@ -82,6 +86,14 @@ app.directive('htTable', function() {
 
             self.pageChanged = function() {
                 this.reloadTable();
+            };
+
+
+            self.rowStyle = function(element) {
+                if ((self.selectMultiple && element.checked) || element == singleSelect)
+                    return active;
+
+                return '';
             };
 
             self.getFieldClass = function(field) {
@@ -141,11 +153,14 @@ app.directive('htTable', function() {
             };
 
             self.countColumns = function() {
-                var count = 2;
+                var count = 1;
                 angular.forEach(self.fields, function(field) {
                     if (field.visible)
                         count++;
                 });
+
+                if (self.selectMultiple)
+                    count++;
 
                 return count;
             };

@@ -23,6 +23,8 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
         data: $scope.data,
         id: 'table-id',
         class: ['myClass'],
+        selectMultiple: true,
+        active: 'active',
         fields: [
             {
                 name: "imie",
