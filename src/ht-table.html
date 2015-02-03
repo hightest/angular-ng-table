@@ -34,7 +34,7 @@
             <td>&nbsp;</td>
             <td ng-repeat="field in table.fields" ng-if="field.visible">
                 <span ng-if="field.type">
-                    Suma: {{table.sum(field.value)}}
+                    Suma: {{table.sum(field.value) | number:2}}
                 </span>
             </td>
         </tr>
