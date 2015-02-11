@@ -204,6 +204,23 @@ app.directive('htTable', function() {
 
                 return sum;
             };
+            
+            self.getValue = function(field, row) {
+
+                var arrayField = field.split('.');
+                var result = angular.copy(row);
+
+                arrayField.forEach(function(entry) {
+                    if (result.hasOwnProperty(entry)) {
+                        result = result[entry];
+                    } else {
+                        result = '';
+                    }
+                });
+
+                return result;
+            };
+            
         },
         controllerAs: 'table'
     };
