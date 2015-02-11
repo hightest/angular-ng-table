@@ -23,7 +23,7 @@
             <td>{{(table.pagination.current - 1) * table.pagination.itemsPerPage + $index + 1}}.</td>
             <th scope="row" ng-if="table.selectMultiple"><input type="checkbox" ng-model="row.checked"></th>
             <td ng-repeat="field in table.fields" ng-if="field.visible" ng-click="table.expand(row)">
-                {{row[field.value]}}
+                {{table.getValue(field.value, row)}}
             </td>
         <tr ng-repeat-end="" ng-if="table.show(row)">
             <td colspan="{{table.countColumns()}}"><div ui-view></div></td>
