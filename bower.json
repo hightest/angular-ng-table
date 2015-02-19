@@ -24,7 +24,6 @@
     "bootstrap": "latest",
     "ng-table": "0.3.*",
     "angular-bootstrap": "latest",
-    "angular-ui-grid": "latest",
-    "google-closure": "latest"
+    "angular-ui-grid": "latest"
   }
 }
