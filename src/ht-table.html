@@ -33,7 +33,7 @@
     <tfoot ng-if="table.hasSum()">
         <tr>
             <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td ng-if="table.selectMultiple">&nbsp;</td>
             <td ng-repeat="field in table.fields" ng-if="field.visible">
                 <span ng-if="field.type">
                     Suma: {{table.sum(field.value) | number:2}}
