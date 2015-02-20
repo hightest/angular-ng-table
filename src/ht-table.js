@@ -45,6 +45,7 @@ app.directive('htTable', function() {
                 }
             });
             self.reloadTable = function() {
+                if (originalData.length === 0) return;
                 var predicates = [];
                 angular.forEach(sorting, function (sort) {
                     var predicate = '';
@@ -219,6 +220,10 @@ app.directive('htTable', function() {
                 });
 
                 return result;
+            };
+
+            self.isTemplate = function(field) {
+                return field.type == 'template';
             };
             
         },

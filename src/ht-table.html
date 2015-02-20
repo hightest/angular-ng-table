@@ -6,7 +6,7 @@
                 <div dropdown class="btn-group">
                     <button class="btn btn-default dropdown-toggle" type="button" dropdown-toggle=""><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
                     <ul class="dropdown-menu" role="menu" ng-click="$event.stopPropagation()">
-                        <li ng-repeat="field in table.fields"><label><input type="checkbox" ng-model="field.visible">{{field.name}}</label></li>
+                        <li ng-repeat="field in table.fields" ng-if="!table.isTemplate(field)"><label><input type="checkbox" ng-model="field.visible">{{field.name}}</label></li>
                     </ul>
                 </div>
             </th>
@@ -23,7 +23,8 @@
             <td>{{(table.pagination.current - 1) * table.pagination.itemsPerPage + $index + 1}}.</td>
             <th scope="row" ng-if="table.selectMultiple"><input type="checkbox" ng-model="row.checked" ng-change="table.checkedChange()"></th>
             <td ng-repeat="field in table.fields" ng-if="field.visible" ng-click="table.expand(row)">
-                {{table.getValue(field.value, row)}}
+                <div ng-if="!table.isTemplate(field)">{{table.getValue(field.value, row)}}</div>
+                <div ng-if="table.isTemplate(field)" ng-include="field.templateUrl"></div>
             </td>
         <tr ng-repeat-end="" ng-if="table.show(row)">
             <td colspan="{{table.countColumns()}}"><div ui-view></div></td>
@@ -35,7 +36,7 @@
             <td>&nbsp;</td>
             <td ng-if="table.selectMultiple">&nbsp;</td>
             <td ng-repeat="field in table.fields" ng-if="field.visible">
-                <span ng-if="field.type">
+                <span ng-if="field.type == 'sum'">
                     Suma: {{table.sum(field.value) | number:2}}
                 </span>
             </td>

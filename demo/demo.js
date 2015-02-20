@@ -35,6 +35,10 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
                 name: "wiek",
                 value: "age",
                 type: "sum"
+            },
+            {
+                type: 'template',
+                templateUrl: 'template.html'
             }
         ],
         init: function(data, pagination) {
@@ -45,4 +49,8 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
         }
     };
 
+});
+
+angular.module('demo').run(function($templateCache) {
+    $templateCache.put("template.html","<div>{{ row.name }}!</div>");
 });
