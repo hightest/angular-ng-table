@@ -12,8 +12,13 @@ app.directive('htTable', function() {
             var rowClick = angular.isDefined(settings.rowClick) ? settings.rowClick : function() {};
             var expand = angular.isDefined(settings.expand) ? settings.expand : function() {};
             var checkedRows = angular.isDefined(settings.checked) ? settings.checked : function() {};
+            self.id = angular.isDefined(settings.id) ? settings.id : 'table';
+            self.class = angular.isDefined(settings.class) ? settings.class : [];
+            self.selectMultiple = angular.isDefined(settings.selectMultiple) ? settings.selectMultiple : false;
+            var active = angular.isDefined(settings.active) ? settings.active : '';
             var originalData = settings.data;
             var init = angular.isDefined(settings.init) ? settings.init : function() {};
+            var singleSelect = null;
             self.fields = settings.fields;
             self.pagination = {
                 total: 0,
@@ -71,6 +76,7 @@ app.directive('htTable', function() {
                 self.reloadTable();
             });
             self.expand = function(row) {
+                singleSelect = row;
                 return rowClick(row);
             };
 
@@ -80,6 +86,14 @@ app.directive('htTable', function() {
 
             self.pageChanged = function() {
                 this.reloadTable();
+            };
+
+
+            self.rowStyle = function(element) {
+                if ((self.selectMultiple && element.checked) || element == singleSelect)
+                    return active;
+
+                return '';
             };
 
             self.getFieldClass = function(field) {
@@ -145,6 +159,9 @@ app.directive('htTable', function() {
                         count++;
                 });
 
+                if (self.selectMultiple)
+                    count++;
+
                 return count;
             };
 
@@ -187,6 +204,23 @@ app.directive('htTable', function() {
 
                 return sum;
             };
+            
+            self.getValue = function(field, row) {
+
+                var arrayField = field.split('.');
+                var result = angular.copy(row);
+
+                arrayField.forEach(function(entry) {
+                    if (result.hasOwnProperty(entry)) {
+                        result = result[entry];
+                    } else {
+                        result = '';
+                    }
+                });
+
+                return result;
+            };
+            
         },
         controllerAs: 'table'
     };

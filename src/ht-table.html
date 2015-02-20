@@ -1,8 +1,7 @@
 <div class="table-responsive">
-<table class="table table-bordered" id="table">
+<table class="table table-bordered" id="{{table.id}}" ng-class="table.class">
     <thead>
         <tr>
-            <th>Lp.</th>
             <th>
                 <div dropdown class="btn-group">
                     <button class="btn btn-default dropdown-toggle" type="button" dropdown-toggle=""><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></button>
@@ -11,17 +10,20 @@
                     </ul>
                 </div>
             </th>
+            <th ng-if="table.selectMultiple">
+
+            </th>
             <th ng-repeat="field in table.fields" ng-if="field.visible" ng-click="table.changeSorting(field, $event)" ng-class="table.getFieldClass(field)" style="cursor:pointer">
                 {{field.name}}
             </th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat-start="row in table.data" ng-class="{active: table.show(row)}">
+        <tr ng-repeat-start="row in table.data" ng-class="table.rowStyle(row)">
             <td>{{(table.pagination.current - 1) * table.pagination.itemsPerPage + $index + 1}}.</td>
-            <th scope="row"><input type="checkbox" ng-model="table.checked[row.id]"></th>
+            <th scope="row" ng-if="table.selectMultiple"><input type="checkbox" ng-model="row.checked" ng-change="table.checkedChange()"></th>
             <td ng-repeat="field in table.fields" ng-if="field.visible" ng-click="table.expand(row)">
-                {{row[field.value]}}
+                {{table.getValue(field.value, row)}}
             </td>
         <tr ng-repeat-end="" ng-if="table.show(row)">
             <td colspan="{{table.countColumns()}}"><div ui-view></div></td>
@@ -31,10 +33,10 @@
     <tfoot ng-if="table.hasSum()">
         <tr>
             <td>&nbsp;</td>
-            <td>&nbsp;</td>
+            <td ng-if="table.selectMultiple">&nbsp;</td>
             <td ng-repeat="field in table.fields" ng-if="field.visible">
                 <span ng-if="field.type">
-                    Suma: {{table.sum(field.value)}}
+                    Suma: {{table.sum(field.value) | number:2}}
                 </span>
             </td>
         </tr>
