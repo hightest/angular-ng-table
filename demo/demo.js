@@ -46,6 +46,9 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
         },
         checked: function(rows) {
             console.log(rows);
+        },
+        postSorting: function(sorting) {
+            console.log(sorting);
         }
     };
 
