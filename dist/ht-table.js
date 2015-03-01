@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-01T12:48:57.400Z
+ * Version: 0.0.1 - 2015-03-01T13:40:20.296Z
  * License: 
  */
 
@@ -165,7 +165,7 @@ app.directive('htTable', function() {
                         sorting = [newField];
                 }
 
-                postSorting(sorting);
+                postSorting(sorting, self.pagination);
                 self.reloadTable();
             };
 

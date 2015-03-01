@@ -157,7 +157,7 @@ app.directive('htTable', function() {
                         sorting = [newField];
                 }
 
-                postSorting(sorting);
+                postSorting(sorting, self.pagination);
                 self.reloadTable();
             };
 
