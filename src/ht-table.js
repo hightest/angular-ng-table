@@ -74,6 +74,7 @@ app.directive('htTable', function() {
             }, function(newVal, oldVal) {
                 if (newVal == oldVal)
                     return;
+                self.pagination.current = 1;
                 self.reloadTable();
             });
             self.expand = function(row) {
@@ -87,6 +88,10 @@ app.directive('htTable', function() {
 
             self.pageChanged = function() {
                 this.reloadTable();
+            };
+
+            self.pages = function() {
+                return parseInt(self.pagination.total / self.pagination.itemsPerPage) + 1;
             };
 
 
