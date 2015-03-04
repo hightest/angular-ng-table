@@ -46,7 +46,7 @@ app.directive('htTable', function() {
                 }
             });
             self.reloadTable = function() {
-                if (originalData.length === 0) return;
+                if (originalData.length === 0 && angular.isFunction(init)) return;
                 var predicates = [];
                 angular.forEach(sorting, function (sort) {
                     var predicate = '';

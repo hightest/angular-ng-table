@@ -1,4 +1,4 @@
-angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $filter) {
+angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope) {
     $scope.data = [
         {id: 1, name: "Moroni", age: 50},
         {id: 1, name: "Tiancum", age: 43},
@@ -42,7 +42,7 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope, $f
             }
         ],
         init: function(data, pagination) {
-            pagination.current = 3;
+            pagination.current = 2;
         },
         checked: function(rows) {
             console.log(rows);

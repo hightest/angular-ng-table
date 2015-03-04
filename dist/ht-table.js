@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-01T13:40:20.296Z
+ * Version: 0.0.1 - 2015-03-04T09:33:18.555Z
  * License: 
  */
 
@@ -54,7 +54,7 @@ app.directive('htTable', function() {
                 }
             });
             self.reloadTable = function() {
-                if (originalData.length === 0) return;
+                if (originalData.length === 0 && angular.isFunction(init)) return;
                 var predicates = [];
                 angular.forEach(sorting, function (sort) {
                     var predicate = '';
