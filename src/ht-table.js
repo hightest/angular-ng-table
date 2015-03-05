@@ -220,7 +220,7 @@ app.directive('htTable', function() {
                 var result = angular.copy(row);
 
                 arrayField.forEach(function(entry) {
-                    if (angular.isDefined(result) && result.hasOwnProperty(entry)) {
+                    if (null !== result && result.hasOwnProperty(entry)) {
                         result = result[entry];
                     } else {
                         return '';
