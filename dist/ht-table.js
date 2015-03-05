@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-04T09:33:18.555Z
+ * Version: 0.0.1 - 2015-03-05T10:48:02.984Z
  * License: 
  */
 
@@ -228,10 +228,10 @@ app.directive('htTable', function() {
                 var result = angular.copy(row);
 
                 arrayField.forEach(function(entry) {
-                    if (result.hasOwnProperty(entry)) {
+                    if (angular.isDefined(result) && result.hasOwnProperty(entry)) {
                         result = result[entry];
                     } else {
-                        result = '';
+                        return '';
                     }
                 });
 
