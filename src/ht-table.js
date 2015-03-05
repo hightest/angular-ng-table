@@ -8,11 +8,7 @@ app.directive('htTable', function() {
         },
         controller: function($scope, orderByFilter) {
             var self = this;
-            var settings = $scope.htTable;
-            var rowClick = angular.isDefined(settings.rowClick) ? settings.rowClick : function() {};
-            var expand = angular.isDefined(settings.expand) ? settings.expand : function() {};
-            var postSorting = angular.isDefined(settings.postSorting) ? settings.postSorting : function() {};
-            var checkedRows = angular.isDefined(settings.checked) ? settings.checked : function() {};
+            var settings = prepareSettings($scope.htTable);
             self.id = angular.isDefined(settings.id) ? settings.id : 'table';
             self.class = angular.isDefined(settings.class) ? settings.class : [];
             self.selectMultiple = angular.isDefined(settings.selectMultiple) ? settings.selectMultiple : false;
@@ -28,6 +24,23 @@ app.directive('htTable', function() {
             };
             var sorting = [];
             self.data = originalData;
+
+            function prepareSettings(settings) {
+                return {
+                    rowClick: getFunction(settings, 'rowClick'),
+                    expand: getFunction(settings, 'expand'),
+                    postSorting: getFunction(settings, 'postSorting'),
+                    checkedRows: getFunction(settings, 'checked')
+                };
+            }
+
+            function getFunction(object, name) {
+                if (angular.isDefined(object[name])) {
+                    return object[name];
+                } else {
+                    return function() {};
+                }
+            }
 
             angular.forEach(self.fields, function(field) {
                 if (angular.isDefined(field.sort)) {
