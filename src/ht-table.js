@@ -131,7 +131,7 @@ app.directive('htTable', function() {
             }
 
             function show(row) {
-                return expand(row);
+                return functions.expand(row);
             }
 
             function pageChanged() {

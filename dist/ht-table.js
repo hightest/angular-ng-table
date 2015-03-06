@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-06T15:20:07.113Z
+ * Version: 0.0.1 - 2015-03-06T15:51:02.732Z
  * License: 
  */
 
@@ -139,7 +139,7 @@ app.directive('htTable', function() {
             }
 
             function show(row) {
-                return expand(row);
+                return functions.expand(row);
             }
 
             function pageChanged() {

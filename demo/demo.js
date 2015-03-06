@@ -50,6 +50,12 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope) {
         postSorting: function(sorting, pagination) {
             console.log(sorting);
             console.log(pagination);
+        },
+        expand: function() {
+            console.log('expand');
+        },
+        rowClick: function() {
+            console.log('row click');
         }
     };
 
