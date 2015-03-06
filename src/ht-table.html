@@ -50,10 +50,10 @@
         <pagination total-items="table.pagination.total" ng-model="table.pagination.current" ng-change="table.pageChanged()" max-size="5" items-per-page="table.pagination.itemsPerPage" previous-text="&laquo;" next-text="&raquo;"></pagination>
     </div>
     <div class="btn-group col-xs-6" ng-if="table.pagination.total > 10">
-        <label class="btn btn-primary" ng-model="table.pagination.itemsPerPage" btn-radio="10">10</label>
-        <label class="btn btn-primary" ng-model="table.pagination.itemsPerPage" btn-radio="25">25</label>
-        <label class="btn btn-primary" ng-if="table.pagination.total > 25" ng-model="table.pagination.itemsPerPage" btn-radio="50">50</label>
-        <label class="btn btn-primary" ng-if="table.pagination.total > 50" ng-model="table.pagination.itemsPerPage" btn-radio="100">100</label>
-        <label class="btn btn-primary" ng-model="table.pagination.itemsPerPage" btn-radio="0">Wszystkie</label>
+        <label class="btn btn-primary" ng-model="table.pagination.itemsPerPage" ng-change="table.updatePagination()" btn-radio="10">10</label>
+        <label class="btn btn-primary" ng-model="table.pagination.itemsPerPage"  ng-change="table.updatePagination()" btn-radio="25">25</label>
+        <label class="btn btn-primary" ng-if="table.pagination.total > 25"  ng-change="table.updatePagination()" ng-model="table.pagination.itemsPerPage" btn-radio="50">50</label>
+        <label class="btn btn-primary" ng-if="table.pagination.total > 50"  ng-change="table.updatePagination()" ng-model="table.pagination.itemsPerPage" btn-radio="100">100</label>
+        <label class="btn btn-primary" ng-model="table.pagination.itemsPerPage"  ng-change="table.updatePagination()" btn-radio="0">Wszystkie</label>
     </div>
 </div>

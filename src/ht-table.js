@@ -8,13 +8,13 @@ app.directive('htTable', function() {
         },
         controller: function($scope, orderByFilter) {
             var self = this;
-            var settings = prepareSettings($scope.htTable);
+            var settings = $scope.htTable;
+            var functions = prepareFunctions(settings);
             self.id = angular.isDefined(settings.id) ? settings.id : 'table';
             self.class = angular.isDefined(settings.class) ? settings.class : [];
             self.selectMultiple = angular.isDefined(settings.selectMultiple) ? settings.selectMultiple : false;
             var active = angular.isDefined(settings.active) ? settings.active : '';
             var originalData = settings.data;
-            var init = angular.isDefined(settings.init) ? settings.init : function() {};
             var singleSelect = null;
             self.fields = settings.fields;
             self.pagination = {
@@ -25,12 +25,38 @@ app.directive('htTable', function() {
             var sorting = [];
             self.data = originalData;
 
-            function prepareSettings(settings) {
+            self.reloadTable = reloadTable;
+            self.expand = expand;
+            self.show = show;
+            self.pageChanged = pageChanged;
+            self.pages = pages;
+            self.rowStyle = rowStyle;
+            self.getFieldClass = getFieldClass;
+            self.findField = findField;
+            self.changeSorting = changeSorting;
+            self.countColumns = countColumns;
+            self.checkedChange = checkedChange;
+            self.hasSum = hasSum;
+            self.getCheckedElements = getCheckedElements;
+            self.sum = sum;
+            self.getValue = getValue;
+            self.isTemplate = isTemplate;
+            self.updatePagination = updatePagination;
+
+            preSort();
+            reloadTable();
+
+            self.test = function() {
+                console.log('s');
+            };
+
+            function prepareFunctions(settings) {
                 return {
                     rowClick: getFunction(settings, 'rowClick'),
                     expand: getFunction(settings, 'expand'),
                     postSorting: getFunction(settings, 'postSorting'),
-                    checkedRows: getFunction(settings, 'checked')
+                    checkedRows: getFunction(settings, 'checked'),
+                    init: getFunction(settings, 'init')
                 };
             }
 
@@ -42,81 +68,92 @@ app.directive('htTable', function() {
                 }
             }
 
-            angular.forEach(self.fields, function(field) {
-                if (angular.isDefined(field.sort)) {
-                    sorting.push({field: field.value, sort: field.sort});
+            function preSort() {
+                for (var i = 0, countFields = self.fields.length; i < countFields; i++) {
+                    var field = self.fields[i];
+
+                    if (angular.isDefined(field.sort)) {
+                        sorting.push({field: field.value, sort: field.sort});
+                    }
+
+                    field.visible = angular.isUndefined(field.visible);
                 }
-            });
-            $scope.$watch('htTable', function(newVal, oldVal) {
+            }
+
+            $scope.$watch('htTable.data', function(newVal, oldVal) {
                 if (newVal == oldVal)
                     return;
-                originalData = newVal.data;
-                self.reloadTable();
-            }, true);
-            angular.forEach(self.fields, function(field) {
-                if (angular.isUndefined(field.visible)) {
-                    field.visible = true;
-                }
+                originalData = newVal;
+                reloadTable();
             });
-            self.reloadTable = function() {
-                if (originalData.length === 0 && angular.isFunction(init)) return;
+
+            function reloadTable() {
+                if (originalData.length === 0 && angular.isFunction(functions.init)) return;
+
                 var predicates = [];
-                angular.forEach(sorting, function (sort) {
+
+                for (var i = 0, count = sorting.length; i < count; i++) {
+                    var sort = sorting[i];
                     var predicate = '';
-                    if (sort.sort == 'asc')
+
+                    if (sort.sort == 'asc') {
                         predicate = '+';
-                    else
+                    } else {
                         predicate = '-';
+                    }
+
                     predicate += sort.field;
                     predicates.push(predicate);
-                });
-                var orderedData = sorting.length ? orderByFilter(originalData, predicates) : originalData;
-                if (angular.isFunction(init)) {
-                    init(orderedData, self.pagination);
-                    init = null;
                 }
-                self.pagination.total = orderedData.length;
-                if (!self.pagination.itemsPerPage)
+
+                var orderedData = sorting.length ? orderByFilter(originalData, predicates) : originalData;
+                var pagination = self.pagination;
+
+                if (angular.isFunction(functions.init)) {
+                    functions.init(orderedData, pagination);
+                    functions.init = null;
+                }
+
+                pagination.total = orderedData.length;
+                if (!pagination.itemsPerPage)
                     self.data = orderedData;
                 else
-                    self.data = orderedData.slice((self.pagination.current - 1) * self.pagination.itemsPerPage, self.pagination.current * self.pagination.itemsPerPage);
-            };
-            self.reloadTable();
+                    self.data = orderedData.slice(
+                        (pagination.current - 1) * pagination.itemsPerPage,
+                        pagination.current * self.pagination.itemsPerPage
+                    );
+            }
 
-            $scope.$watch(function() {
-                return self.pagination.itemsPerPage;
-            }, function(newVal, oldVal) {
-                if (newVal == oldVal)
-                    return;
+            function updatePagination() {
                 self.pagination.current = 1;
                 self.reloadTable();
-            });
-            self.expand = function(row) {
+            }
+
+            function expand(row) {
                 singleSelect = row;
-                return rowClick(row);
-            };
+                return functions.rowClick(row);
+            }
 
-            self.show = function (row) {
+            function show(row) {
                 return expand(row);
-            };
+            }
 
-            self.pageChanged = function() {
+            function pageChanged() {
                 this.reloadTable();
-            };
+            }
 
-            self.pages = function() {
+            function pages() {
                 return parseInt(self.pagination.total / self.pagination.itemsPerPage) + 1;
-            };
+            }
 
-
-            self.rowStyle = function(element) {
+            function rowStyle(element) {
                 if ((self.selectMultiple && element.checked) || element == singleSelect)
                     return active;
 
                 return '';
-            };
+            }
 
-            self.getFieldClass = function(field) {
+            function getFieldClass(field) {
                 for (var i = 0; i < sorting.length; i++) {
                     if (field.value == sorting[i].field) {
                         if (sorting[i].sort == 'asc')
@@ -126,9 +163,9 @@ app.directive('htTable', function() {
                     }
                 }
                 return '';
-            };
+            }
 
-            var findField = function (field) {
+            function findField(field) {
                 for (var i = 0; i < sorting.length; i++) {
                     if (sorting[i].field == field.value) {
                         return i;
@@ -136,9 +173,9 @@ app.directive('htTable', function() {
                 }
 
                 return null;
-            };
+            }
 
-            self.changeSorting = function(field, $event) {
+            function changeSorting(field, $event) {
                 var shift = $event.shiftKey;
 
                 var fieldPosition = findField(field);
@@ -172,80 +209,86 @@ app.directive('htTable', function() {
 
                 postSorting(sorting, self.pagination);
                 self.reloadTable();
-            };
+            }
 
-            self.countColumns = function() {
+            function countColumns() {
                 var count = 1;
-                angular.forEach(self.fields, function(field) {
-                    if (field.visible)
-                        count++;
-                });
+
+                for (var i = 0, length = self.fields.length; i < length; i++) {
+                    var field = self.fields[i];
+
+                    if (field.visible) count++;
+                }
 
                 if (self.selectMultiple)
                     count++;
 
                 return count;
-            };
+            }
 
-            self.checkedChange = function() {
+            function checkedChange() {
                 var checkedElements = self.getCheckedElements();
 
                 checkedRows(checkedElements);
-            };
+            }
 
-            self.hasSum = function() {
-                for (var i = 0; i < self.fields.length; i++) {
+            function hasSum() {
+                for (var i = 0, count = self.fields.length; i < count; i++) {
                     if (angular.isDefined(self.fields[i].type) && self.fields[i].type == 'sum')
                         return true;
                 }
 
                 return false;
-            };
-            self.getCheckedElements = function() {
+            }
+
+            function getCheckedElements() {
                 var checkedElements = [];
 
-                angular.forEach(self.data, function(row) {
+                for (var i = 0, count = self.data.length; i < count; i++) {
+                    var row = self.data[i];
                     if (angular.isDefined(row.checked) && row.checked) {
-                        this.push(row);
+                        checkedElements.push(row);
                     }
-                }, checkedElements);
+                }
 
                 return checkedElements;
-            };
+            }
 
-            self.sum = function(field) {
-                var sum = 0;
+            function sum(field) {
+                var result = 0;
                 var checkedElements = self.getCheckedElements();
+                var count = checkedElements.length;
 
-                if (!checkedElements.length)
-                    checkedElements = originalData;
+                if (!count) checkedElements = originalData;
 
-                angular.forEach(checkedElements, function(element) {
-                    sum += element[field];
-                });
+                for (var i = 0; i < count; i++) {
+                    var element = checkedElements[i];
+                    result += element[field];
+                }
 
-                return sum;
-            };
+                return result;
+            }
             
-            self.getValue = function(field, row) {
-
+            function getValue(field, row) {
                 var arrayField = field.split('.');
-                var result = angular.copy(row);
+                var result = row;
 
-                arrayField.forEach(function(entry) {
+                for (var i = 0, count = arrayField.length; i < count; i++) {
+                    var entry = arrayField[i];
+
                     if (null !== result && result.hasOwnProperty(entry)) {
                         result = result[entry];
                     } else {
                         return '';
                     }
-                });
+                }
 
                 return result;
-            };
+            }
 
-            self.isTemplate = function(field) {
+            function isTemplate(field) {
                 return field.type == 'template';
-            };
+            }
             
         },
         controllerAs: 'table'
