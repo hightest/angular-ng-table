@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-06T15:11:50.975Z
+ * Version: 0.0.1 - 2015-03-06T15:20:07.113Z
  * License: 
  */
 
@@ -130,7 +130,7 @@ app.directive('htTable', function() {
 
             function updatePagination() {
                 self.pagination.current = 1;
-                self.reloadTable();
+                reloadTable();
             }
 
             function expand(row) {
@@ -211,8 +211,8 @@ app.directive('htTable', function() {
                         sorting = [newField];
                 }
 
-                postSorting(sorting, self.pagination);
-                self.reloadTable();
+                functions.postSorting(sorting, self.pagination);
+                reloadTable();
             }
 
             function countColumns() {
@@ -231,9 +231,9 @@ app.directive('htTable', function() {
             }
 
             function checkedChange() {
-                var checkedElements = self.getCheckedElements();
+                var checkedElements = getCheckedElements();
 
-                checkedRows(checkedElements);
+                functions.checkedRows(checkedElements);
             }
 
             function hasSum() {
@@ -260,7 +260,7 @@ app.directive('htTable', function() {
 
             function sum(field) {
                 var result = 0;
-                var checkedElements = self.getCheckedElements();
+                var checkedElements = getCheckedElements();
                 var count = checkedElements.length;
 
                 if (!count) checkedElements = originalData;
