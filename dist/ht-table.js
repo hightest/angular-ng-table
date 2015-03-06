@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-06T15:09:03.147Z
+ * Version: 0.0.1 - 2015-03-06T15:11:50.975Z
  * License: 
  */
 
@@ -54,10 +54,6 @@ app.directive('htTable', function() {
             preSort();
             reloadTable();
 
-            self.test = function() {
-                console.log('s');
-            };
-
             function prepareFunctions(settings) {
                 return {
                     rowClick: getFunction(settings, 'rowClick'),
@@ -88,12 +84,12 @@ app.directive('htTable', function() {
                 }
             }
 
-            $scope.$watch('htTable.data', function(newVal, oldVal) {
+            $scope.$watch('htTable', function(newVal, oldVal) {
                 if (newVal == oldVal)
                     return;
-                originalData = newVal;
+                originalData = newVal.data;
                 reloadTable();
-            });
+            }, true);
 
             function reloadTable() {
                 if (originalData.length === 0 && angular.isFunction(functions.init)) return;
