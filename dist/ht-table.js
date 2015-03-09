@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-09T09:03:28.284Z
+ * Version: 0.0.1 - 2015-03-09T10:32:47.412Z
  * License: 
  */
 
@@ -14,7 +14,7 @@ app.directive('htTable', function() {
         scope: {
             'htTable': '='
         },
-        controller: function($scope, orderByFilter, naturalService) {
+        controller: function($scope, $filter) {
             var self = this;
             var settings = $scope.htTable;
             var functions = prepareFunctions(settings);
@@ -80,7 +80,9 @@ app.directive('htTable', function() {
                         sorting.push({field: field.value, sort: field.sort});
                     }
 
-                    field.visible = angular.isUndefined(field.visible);
+                    if (angular.isUndefined(field.visible)) {
+                        field.visible = true;
+                    }
                 }
             }
 
@@ -110,7 +112,7 @@ app.directive('htTable', function() {
                     predicates.push(predicate);
                 }
 
-                var orderedData = sorting.length ? orderByFilter(originalData, predicates) : originalData;
+                var orderedData = sorting.length ? $filter('natural')(originalData, predicates) : originalData;
                 var pagination = self.pagination;
 
                 if (angular.isFunction(functions.init)) {
@@ -296,6 +298,111 @@ app.directive('htTable', function() {
             
         },
         controllerAs: 'table'
+    };
+})
+
+.filter('natural', function($parse, naturalService){
+        var slice = [].slice;
+
+        function toBoolean(value) {
+            if (typeof value === 'function') {
+                value = true;
+            } else if (value && value.length !== 0) {
+                var v = angular.lowercase("" + value);
+                value = !(v == 'f' || v == '0' || v == 'false' || v == 'no' || v == 'n' || v == '[]');
+            } else {
+                value = false;
+            }
+            return value;
+        }
+
+        function isWindow(obj) {
+            return obj && obj.document && obj.location && obj.alert && obj.setInterval;
+        }
+
+        function map(obj, iterator, context) {
+            var results = [];
+            angular.forEach(obj, function(value, index, list) {
+                results.push(iterator.call(context, value, index, list));
+            });
+            return results;
+        }
+
+        function isArrayLike(obj) {
+            if (obj === null || isWindow(obj)) {
+                return false;
+            }
+
+            var length = obj.length;
+
+            if (obj.nodeType === 1 && length) {
+                return true;
+            }
+
+            return angular.isString(obj) || angular.isArray(obj) || length === 0 ||
+                typeof length === 'number' && length > 0 && (length - 1) in obj;
+        }
+
+
+    return function(array, sortPredicate, reverseOrder) {
+        if (!(isArrayLike(array))) return array;
+        sortPredicate = angular.isArray(sortPredicate) ? sortPredicate: [sortPredicate];
+        if (sortPredicate.length === 0) { sortPredicate = ['+']; }
+        sortPredicate = map(sortPredicate, function(predicate){
+            var descending = false, get = predicate || identity;
+            if (angular.isString(predicate)) {
+                if ((predicate.charAt(0) == '+' || predicate.charAt(0) == '-')) {
+                    descending = predicate.charAt(0) == '-';
+                    predicate = predicate.substring(1);
+                }
+                if ( predicate === '' ) {
+                    // Effectively no predicate was passed so we compare identity
+                    return reverseComparator(function(a,b) {
+                        return compare(a, b);
+                    }, descending);
+                }
+                get = $parse(predicate);
+                if (get.constant) {
+                    var key = get();
+                    return reverseComparator(function(a,b) {
+                        return compare(a[key], b[key]);
+                    }, descending);
+                }
+            }
+            return reverseComparator(function(a,b){
+                return compare(get(a),get(b));
+            }, descending);
+        });
+        return slice.call(array).sort(reverseComparator(comparator, reverseOrder));
+
+        function comparator(o1, o2){
+            for ( var i = 0; i < sortPredicate.length; i++) {
+                var comp = sortPredicate[i](o1, o2);
+                if (comp !== 0) return comp;
+            }
+            return 0;
+        }
+        function reverseComparator(comp, descending) {
+            return toBoolean(descending) ? function(a,b){return comp(b,a);} : comp;
+        }
+        function compare(v1, v2){
+            var t1 = typeof v1;
+            var t2 = typeof v2;
+            if (t1 == t2) {
+                if (angular.isDate(v1) && angular.isDate(v2)) {
+                    v1 = v1.valueOf();
+                    v2 = v2.valueOf();
+                }
+                if (t1 == "string") {
+                    v1 = naturalService.naturalValue(v1.toLowerCase());
+                    v2 = naturalService.naturalValue(v2.toLowerCase());
+                }
+                if (v1 === v2) return 0;
+                return v1 < v2 ? -1 : 1;
+            } else {
+                return t1 < t2 ? -1 : 1;
+            }
+        }
     };
 });
 
