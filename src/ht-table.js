@@ -1,4 +1,4 @@
-var app = angular.module('ht.table', ['ui.bootstrap']);
+var app = angular.module('ht.table', ['ui.bootstrap', 'naturalSort']);
 
 app.directive('htTable', function() {
     return {
@@ -6,7 +6,7 @@ app.directive('htTable', function() {
         scope: {
             'htTable': '='
         },
-        controller: function($scope, orderByFilter) {
+        controller: function($scope, orderByFilter, naturalService) {
             var self = this;
             var settings = $scope.htTable;
             var functions = prepareFunctions(settings);

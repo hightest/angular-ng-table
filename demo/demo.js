@@ -16,7 +16,9 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope) {
         {id: 1, name: "Tiancum", age: 43},
         {id: 1, name: "Jacob", age: 27},
         {id: 1, name: "Nephi", age: 29},
-        {id: 1, name: "Enos", age: 34}
+        {id: 1, name: "a2", age: 34},
+        {id: 1, name: "a11", age: 34},
+        {id: 1, name: "a23", age: 34}
     ];
 
     $scope.settings = {

@@ -24,7 +24,7 @@
             <th scope="row" ng-if="table.selectMultiple"><input type="checkbox" ng-model="row.checked" ng-change="table.checkedChange()"></th>
             <td ng-repeat="field in table.fields" ng-if="field.visible" ng-click="table.expand(row)">
                 <div ng-if="!table.isTemplate(field)">{{table.getValue(field.value, row)}}</div>
-                <div ng-if="table.isTemplate(field)" ng-include="field.templateUrl"></div>
+                <div ng-if="table.isTemplate(field)" ng-click="$event.stopPropagation()" ng-include="field.templateUrl"></div>
             </td>
         <tr ng-repeat-end="" ng-if="table.show(row)">
             <td colspan="{{table.countColumns()}}"><div ui-view></div></td>

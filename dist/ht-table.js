@@ -1,12 +1,12 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-06T15:51:02.732Z
+ * Version: 0.0.1 - 2015-03-09T09:03:28.284Z
  * License: 
  */
 
 
-var app = angular.module('ht.table', ['ui.bootstrap']);
+var app = angular.module('ht.table', ['ui.bootstrap', 'naturalSort']);
 
 app.directive('htTable', function() {
     return {
@@ -14,7 +14,7 @@ app.directive('htTable', function() {
         scope: {
             'htTable': '='
         },
-        controller: function($scope, orderByFilter) {
+        controller: function($scope, orderByFilter, naturalService) {
             var self = this;
             var settings = $scope.htTable;
             var functions = prepareFunctions(settings);
@@ -299,4 +299,116 @@ app.directive('htTable', function() {
     };
 });
 
-angular.module("ht.table").run(["$templateCache", function($templateCache) {$templateCache.put("ht-table.html","<div class=\"table-responsive\"><table class=\"table table-bordered\" id=\"{{table.id}}\" ng-class=\"table.class\"><thead><tr><th><div dropdown=\"\" class=\"btn-group\"><button class=\"btn btn-default dropdown-toggle\" type=\"button\" dropdown-toggle=\"\"><span class=\"glyphicon glyphicon-cog\" aria-hidden=\"true\"></span></button><ul class=\"dropdown-menu\" role=\"menu\" ng-click=\"$event.stopPropagation()\"><li ng-repeat=\"field in table.fields\" ng-if=\"!table.isTemplate(field)\"><label><input type=\"checkbox\" ng-model=\"field.visible\">{{field.name}}</label></li></ul></div></th><th ng-if=\"table.selectMultiple\"></th><th ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.changeSorting(field, $event)\" ng-class=\"table.getFieldClass(field)\" style=\"cursor:pointer\">{{field.name}}</th></tr></thead><tbody><tr ng-repeat-start=\"row in table.data\" ng-class=\"table.rowStyle(row)\"><td>{{(table.pagination.current - 1) * table.pagination.itemsPerPage + $index + 1}}.</td><th scope=\"row\" ng-if=\"table.selectMultiple\"><input type=\"checkbox\" ng-model=\"row.checked\" ng-change=\"table.checkedChange()\"></th><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.expand(row)\"><div ng-if=\"!table.isTemplate(field)\">{{table.getValue(field.value, row)}}</div><div ng-if=\"table.isTemplate(field)\" ng-include=\"field.templateUrl\"></div></td></tr><tr ng-repeat-end=\"\" ng-if=\"table.show(row)\"><td colspan=\"{{table.countColumns()}}\"><div ui-view=\"\"></div></td></tr></tbody><tfoot ng-if=\"table.hasSum()\"><tr><td>&nbsp;</td><td ng-if=\"table.selectMultiple\">&nbsp;</td><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\"><span ng-if=\"field.type == \'sum\'\">Suma: {{table.sum(field.value) | number:2}}</span></td></tr></tfoot></table></div><div class=\"row\"><div class=\"col-xs-6\" ng-if=\"table.pages() > 1\"><pagination total-items=\"table.pagination.total\" ng-model=\"table.pagination.current\" ng-change=\"table.pageChanged()\" max-size=\"5\" items-per-page=\"table.pagination.itemsPerPage\" previous-text=\"&laquo;\" next-text=\"&raquo;\"></pagination></div><div class=\"btn-group col-xs-6\" ng-if=\"table.pagination.total > 10\"><label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" ng-change=\"table.updatePagination()\" btn-radio=\"10\">10</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" ng-change=\"table.updatePagination()\" btn-radio=\"25\">25</label> <label class=\"btn btn-primary\" ng-if=\"table.pagination.total > 25\" ng-change=\"table.updatePagination()\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"50\">50</label> <label class=\"btn btn-primary\" ng-if=\"table.pagination.total > 50\" ng-change=\"table.updatePagination()\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"100\">100</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" ng-change=\"table.updatePagination()\" btn-radio=\"0\">Wszystkie</label></div></div>");}]);
+/* global angular: false */
+
+/*!
+ * Copyright 2013 Phil DeJarnett - http://www.overzealous.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Create a module for naturalSorting
+angular.module("naturalSort", [])
+
+// The core natural service
+    .factory("naturalService", ["$locale", function($locale) {
+        "use strict";
+        // the cache prevents re-creating the values every time, at the expense of
+        // storing the results forever. Not recommended for highly changing data
+        // on long-term applications.
+        var natCache = {},
+        // amount of extra zeros to padd for sorting
+            padding = function(value) {
+                return "00000000000000000000".slice(value.length);
+            },
+
+        // Converts a value to a string.  Null and undefined are converted to ''
+            toString = function(value) {
+                if(value === null || value === undefined) return '';
+                return ''+value;
+            },
+
+        // Calculate the default out-of-order date format (dd/MM/yyyy vs MM/dd/yyyy)
+            natDateMonthFirst = $locale.DATETIME_FORMATS.shortDate.charAt(0) === "M",
+        // Replaces all suspected dates with a standardized yyyy-m-d, which is fixed below
+            fixDates = function(value) {
+                // first look for dd?-dd?-dddd, where "-" can be one of "-", "/", or "."
+                return toString(value).replace(/(\d\d?)[-\/\.](\d\d?)[-\/\.](\d{4})/, function($0, $m, $d, $y) {
+                    // temporary holder for swapping below
+                    var t = $d;
+                    // if the month is not first, we'll swap month and day...
+                    if(!natDateMonthFirst) {
+                        // ...but only if the day value is under 13.
+                        if(Number($d) < 13) {
+                            $d = $m;
+                            $m = t;
+                        }
+                    } else if(Number($m) > 12) {
+                        // Otherwise, we might still swap the values if the month value is currently over 12.
+                        $d = $m;
+                        $m = t;
+                    }
+                    // return a standardized format.
+                    return $y+"-"+$m+"-"+$d;
+                });
+            },
+
+        // Fix numbers to be correctly padded
+            fixNumbers = function(value) {
+                // First, look for anything in the form of d.d or d.d.d...
+                return value.replace(/(\d+)((\.\d+)+)?/g, function ($0, integer, decimal, $3) {
+                    // If there's more than 2 sets of numbers...
+                    if (decimal !== $3) {
+                        // treat as a series of integers, like versioning,
+                        // rather than a decimal
+                        return $0.replace(/(\d+)/g, function ($d) {
+                            return padding($d) + $d;
+                        });
+                    } else {
+                        // add a decimal if necessary to ensure decimal sorting
+                        decimal = decimal || ".0";
+                        return padding(integer) + integer + decimal + padding(decimal);
+                    }
+                });
+            },
+
+        // Finally, this function puts it all together.
+            natValue = function (value) {
+                if(natCache[value]) {
+                    return natCache[value];
+                }
+                natCache[value] = fixNumbers(fixDates(value));
+                return natCache[value];
+            };
+
+        // The actual object used by this service
+        return {
+            naturalValue: natValue,
+            naturalSort: function(a, b) {
+                a = natVale(a);
+                b = natValue(b);
+                return (a < b) ? -1 : ((a > b) ? 1 : 0);
+            }
+        };
+    }])
+
+// Attach a function to the rootScope so it can be accessed by "orderBy"
+    .run(["$rootScope", "naturalService", function($rootScope, naturalService) {
+        "use strict";
+        $rootScope.natural = function (field) {
+            return function (item) {
+                return naturalService.naturalValue(item[field]);
+            };
+        };
+    }]);
+angular.module("ht.table").run(["$templateCache", function($templateCache) {$templateCache.put("ht-table.html","<div class=\"table-responsive\"><table class=\"table table-bordered\" id=\"{{table.id}}\" ng-class=\"table.class\"><thead><tr><th><div dropdown=\"\" class=\"btn-group\"><button class=\"btn btn-default dropdown-toggle\" type=\"button\" dropdown-toggle=\"\"><span class=\"glyphicon glyphicon-cog\" aria-hidden=\"true\"></span></button><ul class=\"dropdown-menu\" role=\"menu\" ng-click=\"$event.stopPropagation()\"><li ng-repeat=\"field in table.fields\" ng-if=\"!table.isTemplate(field)\"><label><input type=\"checkbox\" ng-model=\"field.visible\">{{field.name}}</label></li></ul></div></th><th ng-if=\"table.selectMultiple\"></th><th ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.changeSorting(field, $event)\" ng-class=\"table.getFieldClass(field)\" style=\"cursor:pointer\">{{field.name}}</th></tr></thead><tbody><tr ng-repeat-start=\"row in table.data\" ng-class=\"table.rowStyle(row)\"><td>{{(table.pagination.current - 1) * table.pagination.itemsPerPage + $index + 1}}.</td><th scope=\"row\" ng-if=\"table.selectMultiple\"><input type=\"checkbox\" ng-model=\"row.checked\" ng-change=\"table.checkedChange()\"></th><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\" ng-click=\"table.expand(row)\"><div ng-if=\"!table.isTemplate(field)\">{{table.getValue(field.value, row)}}</div><div ng-if=\"table.isTemplate(field)\" ng-click=\"$event.stopPropagation()\" ng-include=\"field.templateUrl\"></div></td></tr><tr ng-repeat-end=\"\" ng-if=\"table.show(row)\"><td colspan=\"{{table.countColumns()}}\"><div ui-view=\"\"></div></td></tr></tbody><tfoot ng-if=\"table.hasSum()\"><tr><td>&nbsp;</td><td ng-if=\"table.selectMultiple\">&nbsp;</td><td ng-repeat=\"field in table.fields\" ng-if=\"field.visible\"><span ng-if=\"field.type == \'sum\'\">Suma: {{table.sum(field.value) | number:2}}</span></td></tr></tfoot></table></div><div class=\"row\"><div class=\"col-xs-6\" ng-if=\"table.pages() > 1\"><pagination total-items=\"table.pagination.total\" ng-model=\"table.pagination.current\" ng-change=\"table.pageChanged()\" max-size=\"5\" items-per-page=\"table.pagination.itemsPerPage\" previous-text=\"&laquo;\" next-text=\"&raquo;\"></pagination></div><div class=\"btn-group col-xs-6\" ng-if=\"table.pagination.total > 10\"><label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" ng-change=\"table.updatePagination()\" btn-radio=\"10\">10</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" ng-change=\"table.updatePagination()\" btn-radio=\"25\">25</label> <label class=\"btn btn-primary\" ng-if=\"table.pagination.total > 25\" ng-change=\"table.updatePagination()\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"50\">50</label> <label class=\"btn btn-primary\" ng-if=\"table.pagination.total > 50\" ng-change=\"table.updatePagination()\" ng-model=\"table.pagination.itemsPerPage\" btn-radio=\"100\">100</label> <label class=\"btn btn-primary\" ng-model=\"table.pagination.itemsPerPage\" ng-change=\"table.updatePagination()\" btn-radio=\"0\">Wszystkie</label></div></div>");}]);
