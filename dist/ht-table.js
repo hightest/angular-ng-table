@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-10T12:05:29.706Z
+ * Version: 0.0.1 - 2015-03-10T12:31:33.353Z
  * License: 
  */
 
@@ -18,6 +18,7 @@ app.directive('htTable', function() {
             var self = this;
             var settings = $scope.htTable;
             var functions = prepareFunctions(settings);
+            var suppressWatch = false;
             self.id = angular.isDefined(settings.id) ? settings.id : 'table';
             self.class = angular.isDefined(settings.class) ? settings.class : [];
             self.selectMultiple = angular.isDefined(settings.selectMultiple) ? settings.selectMultiple : false;
@@ -87,11 +88,16 @@ app.directive('htTable', function() {
             }
 
             $scope.$watch('htTable', function(newVal, oldVal) {
-                if (newVal == oldVal)
+                if (newVal == oldVal) return;
+
+                if (suppressWatch) {
+                    suppressWatch = false;
                     return;
+                }
+
                 originalData = newVal.data;
                 updatePagination();
-            });
+            }, true);
 
             function reloadTable() {
                 if (originalData.length === 0 && angular.isFunction(functions.init)) return;
@@ -233,6 +239,7 @@ app.directive('htTable', function() {
             }
 
             function checkedChange() {
+                suppressWatch = true;
                 var checkedElements = getCheckedElements();
 
                 functions.checkedRows(checkedElements);
