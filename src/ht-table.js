@@ -82,7 +82,7 @@ app.directive('htTable', function() {
                 if (newVal == oldVal)
                     return;
                 originalData = newVal.data;
-                reloadTable();
+                updatePagination();
             }, true);
 
             function reloadTable() {
@@ -374,9 +374,11 @@ app.directive('htTable', function() {
             }
             return 0;
         }
+
         function reverseComparator(comp, descending) {
             return toBoolean(descending) ? function(a,b){return comp(b,a);} : comp;
         }
+
         function compare(v1, v2){
             var t1 = typeof v1;
             var t2 = typeof v2;
