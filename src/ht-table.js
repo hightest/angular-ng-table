@@ -255,10 +255,10 @@ app.directive('htTable', function() {
             function sum(field) {
                 var result = 0;
                 var checkedElements = getCheckedElements();
+
+                if (!checkedElements.length) checkedElements = originalData;
+
                 var count = checkedElements.length;
-
-                if (!count) checkedElements = originalData;
-
                 for (var i = 0; i < count; i++) {
                     var element = checkedElements[i];
                     result += element[field];

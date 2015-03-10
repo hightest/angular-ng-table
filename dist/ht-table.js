@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-09T10:32:47.412Z
+ * Version: 0.0.1 - 2015-03-10T08:26:37.868Z
  * License: 
  */
 
@@ -263,10 +263,10 @@ app.directive('htTable', function() {
             function sum(field) {
                 var result = 0;
                 var checkedElements = getCheckedElements();
+
+                if (!checkedElements.length) checkedElements = originalData;
+
                 var count = checkedElements.length;
-
-                if (!count) checkedElements = originalData;
-
                 for (var i = 0; i < count; i++) {
                     var element = checkedElements[i];
                     result += element[field];
