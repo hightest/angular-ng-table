@@ -83,7 +83,7 @@ app.directive('htTable', function() {
                     return;
                 originalData = newVal.data;
                 updatePagination();
-            }, true);
+            });
 
             function reloadTable() {
                 if (originalData.length === 0 && angular.isFunction(functions.init)) return;

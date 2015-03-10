@@ -1,7 +1,7 @@
 /*!
  * angular-ht-ng-table
  * https://github.com/hightest/angular-ng-table
- * Version: 0.0.1 - 2015-03-10T10:58:49.356Z
+ * Version: 0.0.1 - 2015-03-10T12:05:29.706Z
  * License: 
  */
 
@@ -91,7 +91,7 @@ app.directive('htTable', function() {
                     return;
                 originalData = newVal.data;
                 updatePagination();
-            }, true);
+            });
 
             function reloadTable() {
                 if (originalData.length === 0 && angular.isFunction(functions.init)) return;
