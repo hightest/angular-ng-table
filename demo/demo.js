@@ -36,7 +36,8 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope) {
             {
                 name: "wiek",
                 value: "age",
-                type: "sum"
+                type: "sum",
+                filter: "currency"
             },
             {
                 type: 'template',
@@ -59,6 +60,10 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope) {
         rowClick: function() {
             console.log('row click');
         }
+    };
+
+    $scope.clear = function() {
+        $scope.settings.clearSelect();
     };
 
 });

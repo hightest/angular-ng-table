@@ -6,9 +6,12 @@ app.directive('htTable', function() {
         scope: {
             'htTable': '='
         },
-        controller: function($scope, $filter) {
+        controller: function($scope, $filter, $rootScope) {
             var self = this;
             var settings = $scope.htTable;
+            settings.reset = updatePagination;
+            settings.reload = reloadTable;
+            settings.clearSelect = clearSelect;
             var functions = prepareFunctions(settings);
             var suppressWatch = false;
             self.id = angular.isDefined(settings.id) ? settings.id : 'table';
@@ -88,8 +91,10 @@ app.directive('htTable', function() {
                 }
 
                 originalData = newVal.data;
-                updatePagination();
             }, true);
+
+
+            $rootScope.$on('ht.table.refresh', updatePagination);
 
             function reloadTable() {
                 if (originalData.length === 0 && angular.isFunction(functions.init)) return;
@@ -259,6 +264,12 @@ app.directive('htTable', function() {
                 return checkedElements;
             }
 
+            function clearSelect() {
+                for (var i = 0, count = self.data.length; i < count; i++) {
+                    self.data[i].checked = false;
+                }
+            }
+
             function sum(field) {
                 var result = 0;
                 var checkedElements = getCheckedElements();
@@ -275,7 +286,8 @@ app.directive('htTable', function() {
             }
             
             function getValue(field, row) {
-                var arrayField = field.split('.');
+                var value = field.value;
+                var arrayField = value.split('.');
                 var result = row;
 
                 for (var i = 0, count = arrayField.length; i < count; i++) {
@@ -288,13 +300,16 @@ app.directive('htTable', function() {
                     }
                 }
 
+                if (angular.isDefined(field.filter)) {
+                    result = $filter(field.filter)(result);
+                }
+
                 return result;
             }
 
             function isTemplate(field) {
                 return field.type == 'template';
             }
-            
         },
         controllerAs: 'table'
     };
