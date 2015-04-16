@@ -1,4 +1,4 @@
-var app = angular.module('ht.table', ['ui.bootstrap', 'naturalSort']);
+var app = angular.module('ht.table', ['ui.bootstrap', 'naturalSort', 'ngSanitize', 'ngCsv']);
 
 app.directive('htTable', function() {
     return {
@@ -286,6 +286,7 @@ app.directive('htTable', function() {
             }
             
             function getValue(field, row) {
+                if (angular.isUndefined(field.value)) return;
                 var value = field.value;
                 var arrayField = value.split('.');
                 var result = row;
@@ -307,9 +308,40 @@ app.directive('htTable', function() {
                 return result;
             }
 
+
             function isTemplate(field) {
                 return field.type == 'template';
             }
+
+            self.export = function() {
+                var data = originalData;
+                var count = data.length;
+                var result = [];
+                for (var i = 0; i < count; i++) {
+                    var row = [];
+                    for (var k = 0; k < self.fields.length; k++) {
+                        var field = self.fields[k];
+                        if (!field.visible || angular.isUndefined(field.value)) continue;
+                        row.push(getValue(field, data[i]));
+                    }
+                    result.push(row);
+                }
+                return result;
+            };
+
+            self.exportHeader = function() {
+                var result = [];
+
+                for (var i = 0; i < self.fields.length; i++) {
+                    var field = self.fields[i];
+
+                    if (!field.visible || angular.isUndefined(field.value)) continue;
+
+                    result.push(field.name);
+                }
+
+                return result;
+            };
         },
         controllerAs: 'table'
     };

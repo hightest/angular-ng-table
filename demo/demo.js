@@ -57,6 +57,7 @@ angular.module('demo', ['ht.table']).controller('DemoCtrl', function ($scope) {
         expand: function() {
             console.log('expand');
         },
+
         rowClick: function() {
             console.log('row click');
         }

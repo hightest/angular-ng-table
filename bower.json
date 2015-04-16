@@ -24,6 +24,8 @@
     "bootstrap": "latest",
     "ng-table": "0.3.*",
     "angular-bootstrap": "latest",
-    "angular-ui-grid": "latest"
+    "angular-ui-grid": "latest",
+    "ng-csv": "latest",
+    "angular-sanitize": "latest"
   }
 }
